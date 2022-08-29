@@ -1,56 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useSelector } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { RootState } from "./app/store";
+import RequireAdmin from "./guards/RequireAdmin";
+import AdminDashboard from "./views/Admin/Dashboard";
+import AdminEmployees from "./views/Admin/Employees";
+import AdminLogin from "./views/Admin/Login";
+import AdminReviews from "./views/Admin/Reviews";
+import AdminReview from "./views/Admin/Reviews/Show";
+import Employees from "./views/Employees";
+import Feedbacks from "./views/Employees/feedbacks";
+import Intro from "./views/Intro";
 
 function App() {
+  const authAdmin = useSelector((state: RootState) => state.authAdmin);
+  console.log(authAdmin);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Intro />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route element={<RequireAdmin />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/employees" element={<AdminEmployees />} />
+            <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/admin/reviews/:id" element={<AdminReview />} />
+          </Route>
+          <Route path="/employees" element={<Employees />} />
+          <Route path="/employees/:id" element={<Feedbacks />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }
